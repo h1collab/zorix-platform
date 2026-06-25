@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - artifact/zorix-cli-1.0.0-20260625
+  pull_request:
+    branches:
+      - main
   workflow_dispatch:
 
 permissions:
