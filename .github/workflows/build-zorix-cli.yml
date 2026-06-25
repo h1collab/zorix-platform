@@ -1,0 +1,61 @@
+name: Build Zorix CLI
+
+on:
+  push:
+    branches:
+      - artifact/zorix-cli-1.0.0-20260625
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+          cache-dependency-path: zorix-cli/package.json
+
+      - name: Validate and test
+        working-directory: zorix-cli
+        run: |
+          npm run check
+          npm test
+
+      - name: Build npm archive
+        working-directory: zorix-cli
+        run: |
+          mkdir -p dist
+          npm pack --pack-destination dist
+
+      - name: Build complete ZIP
+        run: |
+          mkdir -p build/zorix-cli-1.0.0
+          cp -R zorix-cli/bin build/zorix-cli-1.0.0/
+          cp -R zorix-cli/lib build/zorix-cli-1.0.0/
+          cp -R zorix-cli/test build/zorix-cli-1.0.0/
+          cp zorix-cli/package.json build/zorix-cli-1.0.0/
+          cp zorix-cli/README.md build/zorix-cli-1.0.0/
+          cp zorix-cli/README.zh-CN.md build/zorix-cli-1.0.0/
+          cp zorix-cli/LICENSE build/zorix-cli-1.0.0/
+          cp zorix-cli/dist/*.tgz build/zorix-cli-1.0.0/
+          chmod +x build/zorix-cli-1.0.0/bin/zorix.mjs
+          cd build
+          zip -r zorix-cli-1.0.0.zip zorix-cli-1.0.0
+
+      - name: Upload archive
+        uses: actions/upload-artifact@v4
+        with:
+          name: zorix-cli-1.0.0
+          path: |
+            build/zorix-cli-1.0.0.zip
+            zorix-cli/dist/*.tgz
+          if-no-files-found: error
+          retention-days: 30
