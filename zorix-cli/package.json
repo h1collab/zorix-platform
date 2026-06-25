@@ -1,0 +1,39 @@
+{
+  "name": "@zorix/cli",
+  "version": "1.0.0",
+  "description": "Official Zorix CLI for authenticated cookie sessions and streaming chat.",
+  "type": "module",
+  "private": true,
+  "license": "UNLICENSED",
+  "bin": {
+    "zorix": "./bin/zorix.mjs",
+    "zrx": "./bin/zorix.mjs"
+  },
+  "main": "./lib/client.mjs",
+  "exports": {
+    ".": "./lib/client.mjs"
+  },
+  "files": [
+    "bin",
+    "lib",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "check": "node --check bin/zorix.mjs && node --check lib/client.mjs",
+    "test": "node --test test/*.test.mjs",
+    "build": "npm run check && npm test",
+    "pack:local": "npm run build && npm pack"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "keywords": [
+    "zorix",
+    "cli",
+    "ai",
+    "chat",
+    "sse",
+    "cookie"
+  ]
+}
